@@ -1,0 +1,28 @@
+name: Feature or new check
+description: Suggest a new misconfiguration check or an improvement
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [New check, Dashboard, Scoring, Integration, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: For a new check, name the cloud, service, the misconfiguration and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: permissions
+    attributes:
+      label: Permissions needed
+      description: Which read-only API calls would the scanner need? Anything that reads data or writes is out of scope.
+  - type: input
+    id: reference
+    attributes:
+      label: Reference
+      description: CIS / NIST control or provider documentation, if any.

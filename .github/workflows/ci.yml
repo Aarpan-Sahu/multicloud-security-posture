@@ -8,23 +8,61 @@ on:
 permissions:
   contents: read
 
+# Cancel superseded runs on the same branch or PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   python:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest supported (pyproject requires-python) and the version the Docker image uses.
+        python-version: ["3.10", "3.12"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: pip
+          cache-dependency-path: requirements*.txt
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: pytest -q
       - name: Demo scan (no cloud credentials needed)
         run: python scripts/scan.py --providers demo --out /tmp/demo.json
 
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - name: Build image (not pushed)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: mc-cspm:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Container starts and passes its health check
+        run: |
+          docker run -d --name cspm -p 8501:8501 mc-cspm:ci
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:8501/_stcore/health && exit 0
+            sleep 2
+          done
+          docker logs cspm
+          exit 1
+
   terraform:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix:
         dir: [terraform/aws/scanner-role, terraform/aws/lab, terraform/azure, terraform/gcp]
@@ -40,6 +78,7 @@ jobs:
 
   iac-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - name: Checkov (lab is intentionally misconfigured, so it is skipped)
@@ -52,6 +91,7 @@ jobs:
 
   secrets-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
