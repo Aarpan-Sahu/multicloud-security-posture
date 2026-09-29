@@ -1,0 +1,32 @@
+[project]
+name = "multicloud-security-posture"
+version = "1.0.0"
+description = "AI-powered multi-cloud (AWS, Azure, GCP) security posture dashboard"
+requires-python = ">=3.10"
+authors = [{ name = "Aarpan Sahu" }]
+license = "MIT"
+
+[project.urls]
+Repository = "https://github.com/Aarpan-Sahu/multicloud-security-posture"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "BLE"]
+# S101 asserts in tests; S311 `random` only drives demo data; S104/S105 false positives:
+# a scanner *inspects* 0.0.0.0 and "password_enabled", it doesn't bind or store them.
+# BLE001: broad catches are deliberate fault isolation (one failed API call must not kill a scan).
+ignore = ["S101", "S311", "S104", "S105", "BLE001"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S"]
+"app.py" = ["E402"]
+"src/cspm/rules.py" = ["E501"]  # one rule per row reads better as a table
+"scripts/*" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
