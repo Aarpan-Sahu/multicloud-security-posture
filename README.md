@@ -1,6 +1,6 @@
 # Multi-Cloud Security Posture Dashboard
 
-[![ci](https://github.com/Aarpan-Sahu/multicloud-security-posture/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![ci](https://github.com/Aarpan-Sahu/multicloud-security-posture/actions/workflows/ci.yml/badge.svg)](https://github.com/Aarpan-Sahu/multicloud-security-posture/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -26,6 +26,7 @@ The scanner uses each provider's native SDK with **read-only, keyless** credenti
 - [Project layout](#project-layout)
 - [Testing and CI](#testing-and-ci)
 - [Roadmap](#roadmap)
+- [Contributing and security](#contributing-and-security)
 
 ## Architecture
 
@@ -251,7 +252,7 @@ pytest -q
 - **AI safety**: redaction, placeholder stability, injection strings excluded, JSON-parse fallback, caching, offline mode.
 - **UI smoke test**: the whole dashboard renders headlessly and filters change results.
 
-CI runs lint, tests, a demo scan, `terraform fmt` and `validate` for every module, Checkov and gitleaks.
+CI runs lint and tests on Python 3.10 and 3.12, a demo scan, a Docker build with a health check, `terraform fmt` and `validate` for every module, Checkov and gitleaks.
 
 ## Roadmap
 
@@ -260,6 +261,10 @@ CI runs lint, tests, a demo scan, `terraform fmt` and `validate` for every modul
 - Suppressions with owner, reason and expiry, stored as code.
 - Org-wide discovery: AWS Organizations, Azure management groups, GCP folders.
 - Ticket export (Jira / ServiceNow) and Slack alerts for new criticals.
+
+## Contributing and security
+
+Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Dependabot keeps Python packages, GitHub Actions, the Docker base image and Terraform providers up to date. Please report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 ---
 

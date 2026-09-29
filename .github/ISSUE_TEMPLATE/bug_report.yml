@@ -1,0 +1,42 @@
+name: Bug report
+description: Something is broken or a check reports the wrong result
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste account IDs, ARNs, subscription IDs, project IDs, resource names or scan snapshots. Redact them first.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Dashboard, AWS collector, Azure collector, GCP collector, Scoring, AI advisor, Terraform, CI / scheduled scan, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the rule ID if a check is wrong, and whether it is a false positive or a false negative.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: For a wrong check, the redacted shape of the resource configuration helps most.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      render: text
